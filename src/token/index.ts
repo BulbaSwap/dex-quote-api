@@ -5,9 +5,9 @@ import { NATIVE_ADDRESS } from 'src/lib/router';
 export async function tokenInfo(address: string) {
   if (NATIVE_ADDRESS.includes(address.toLowerCase())) {
     return {
-      symbol: 'ETH',
+      symbol: 'WETH',
       decimals: 18,
-      address: NATIVE_ADDRESS[0]
+      address: '0x5300000000000000000000000000000000000011'
     }
   }
   try {
