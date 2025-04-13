@@ -29,7 +29,7 @@ const address = z.union([
   z.custom<string>((value) => isAddress(value, { strict: false }), "Invalid Address"),
 ]);
 
-const min = 0.000000001;
+const min = 1;
 const max = 2**256;
 
 export const QuoteSchema = z.object({
