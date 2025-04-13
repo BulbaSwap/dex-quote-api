@@ -40,7 +40,7 @@ export const QuoteSchema = z.object({
   slippage: z.coerce.number().min(0.01).max(100),
   protocols: z.nativeEnum(Protocols).optional().nullable(),
   recipient: z.custom<string>((value) => isAddress(value, { strict: false }), "Invalid Address").optional().nullable(),
-  deadline: z.coerce.number().min(0.01).max(3600).optional().nullable(),
+  deadline: z.coerce.number().min(1).max(3600).optional().nullable(),
   minSplits: z.coerce.number().int().positive().min(1).max(7).optional().nullable(),
   permitSignature: z.string().optional().nullable(),
   permitNonce: z.coerce.number().int().positive().optional().nullable(),
