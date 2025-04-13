@@ -23,10 +23,10 @@ export class QuoteService {
     const outToken = await tokenInfo(quote.tokenOutAddress);
     const tradeType = tradeTypeObj[quote.type];
     const args = {
-      tokenInAddress: quote.tokenInAddress.toLowerCase(),
+      tokenInAddress: inToken.address,
       tokenInDecimals: Number(inToken.decimals),
       tokenInSymbol: inToken.symbol,
-      tokenOutAddress: quote.tokenOutAddress.toLowerCase(),
+      tokenOutAddress: outToken.address,
       tokenOutDecimals: Number(outToken.decimals),
       tokenOutSymbol: outToken.symbol,
       amount: quote.amount.toString(),
