@@ -99,12 +99,17 @@ export class QuoteService {
       };
     }
 
-    const quoteResponse = await getQuoteRoute(args, swapParams, routingConfig);
+    try {
+      const quoteResponse = await getQuoteRoute(args, swapParams, routingConfig);
 
-    if (quoteResponse) {
-      return quoteResponse;
-    } else {
-      this.logger.log(`Route not found: ${quote}`);
+      if (quoteResponse) {
+        return quoteResponse;
+      } else {
+        this.logger.log(`Route not found: ${quote}`);
+        throw new NotFoundException();
+      }
+    } catch (error) {
+      this.logger.error(`quoteResponse error: ${JSON.stringify(error)}`);
       throw new NotFoundException();
     }
   }
