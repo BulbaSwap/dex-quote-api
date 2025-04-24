@@ -172,20 +172,9 @@ export function transformSwapRouteToGetQuoteResult(
 function getRouter(): AlphaRouter {
   const chainId = Number(process.env.CHAIN_ID) as unknown as ChainId;
   const provider = new StaticJsonRpcProvider(process.env.RPC_URL);
-  const multicall2Provider = new UniswapMulticallProvider(
-    chainId,
-    provider,
-    375_000,
-  );
-  const v3PoolProvider = new CachingV3PoolProvider(
-    chainId,
-    new V3PoolProvider(ID_TO_CHAIN_ID(chainId), multicall2Provider),
-    new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false })),
-  );
   const router = new AlphaRouter({
     chainId,
     provider,
-    v3PoolProvider,
   });
   return router;
 }

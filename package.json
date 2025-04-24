@@ -23,7 +23,7 @@
     "@bulbaswap/permit2-sdk": "^2.0.1",
     "@bulbaswap/router-sdk": "^2.0.1",
     "@bulbaswap/sdk-core": "^2.0.1",
-    "@bulbaswap/smart-order-router": "^2.0.3",
+    "@bulbaswap/smart-order-router": "^2.0.4",
     "@bulbaswap/universal-router-sdk": "^2.0.2",
     "@ethersproject/providers": "^5.7.2",
     "@nestjs/common": "^10.0.0",
