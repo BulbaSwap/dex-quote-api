@@ -37,7 +37,7 @@ const min = 1;
 const max = 2**256;
 
 export const QuoteSchema = z.object({
-  amount: z.coerce.number().min(min).max(max),
+  amount: z.coerce.number().int().positive(),
   tokenInAddress: address,
   tokenOutAddress: address,
   type: z.nativeEnum(TradeTypeRequest),
@@ -47,10 +47,10 @@ export const QuoteSchema = z.object({
   deadline: z.coerce.number().int().positive().min(60).max(3600).optional().nullable(),
   minSplits: z.coerce.number().int().positive().min(1).max(7).optional().nullable(),
   permitSignature: z.string().optional().nullable(),
-  permitNonce: z.coerce.number().int().positive().optional().nullable(),
+  permitNonce: z.coerce.number().int().optional().nullable(),
   permitExpiration: z.coerce.number().int().positive().optional().nullable(),
-  permitAmount: z.coerce.number().min(min).max(max).optional().nullable(),
-  permitSigDeadline: z.coerce.number().int().positive().min(1).max(60000).optional().nullable(),
+  permitAmount: z.coerce.number().int().positive().optional().nullable(),
+  permitSigDeadline: z.coerce.number().int().positive().optional().nullable(),
 });
 
 export class QuoteDto extends createZodDto(QuoteSchema) {}
