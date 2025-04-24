@@ -8,13 +8,17 @@ enum TradeTypeRequest {
   EXACT_OUTPUT = '1',
   EXACT_IN = 'exactIn',
   EXACT_OUT = 'exactOut',
+  BUY = 'buy',
+  SELL = 'sell',
 }
 
 export const tradeTypeObj = {
   [TradeTypeRequest.EXACT_INPUT]: TradeType.EXACT_INPUT,
   [TradeTypeRequest.EXACT_IN]: TradeType.EXACT_INPUT,
+  [TradeTypeRequest.BUY]: TradeType.EXACT_INPUT,
   [TradeTypeRequest.EXACT_OUTPUT]: TradeType.EXACT_OUTPUT,
   [TradeTypeRequest.EXACT_OUT]: TradeType.EXACT_OUTPUT,
+  [TradeTypeRequest.SELL]: TradeType.EXACT_OUTPUT,
 }
 
 export enum Protocols {
