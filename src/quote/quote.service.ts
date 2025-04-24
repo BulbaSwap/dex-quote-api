@@ -105,7 +105,7 @@ export class QuoteService {
       if (quoteResponse) {
         return quoteResponse;
       } else {
-        this.logger.log(`Route not found: ${quote}`);
+        this.logger.log(`Route not found: ${JSON.stringify(quote)}`);
         throw new NotFoundException();
       }
     } catch (error) {
