@@ -37,7 +37,7 @@ export const QuoteSchema = z.object({
   tokenInAddress: address,
   tokenOutAddress: address,
   type: z.nativeEnum(TradeTypeRequest),
-  slippage: z.coerce.number().min(0.01).max(100),
+  slippage: z.coerce.number().min(0.01).max(100).optional().nullable(),
   protocols: z.nativeEnum(Protocols).optional().nullable(),
   recipient: z.custom<string>((value) => isAddress(value, { strict: false }), "Invalid Address").optional().nullable(),
   deadline: z.coerce.number().int().positive().min(1).max(60000).optional().nullable(),
