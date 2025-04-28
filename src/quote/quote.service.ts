@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { QuoteDto, tradeTypeObj } from './quote.dto';
 import { tokenInfo } from 'src/token';
-import { getQuoteRoute } from 'src/lib/router';
+import { getQuoteRoute, PROTOCOLS } from 'src/lib/router';
 import { parseDeadline, parseSlippageTolerance } from 'src/lib';
 
 @Injectable()
@@ -34,10 +34,10 @@ export class QuoteService {
     };
     const protocols: Protocol[] = (
       quote.protocols?.includes(',')
-        ? ['V2', 'V3']
+        ? PROTOCOLS
         : quote.protocols
           ? [quote.protocols.toUpperCase()]
-          : ['V2', 'V3']
+          : PROTOCOLS
     ) as Protocol[];
     const routingConfig: AlphaRouterConfig = {
       v2PoolSelection: {

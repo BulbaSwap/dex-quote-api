@@ -14,14 +14,9 @@ import { Pool } from '@bulbaswap/v3-sdk';
 import {
   AlphaRouter,
   AlphaRouterConfig,
-  CachingV3PoolProvider,
-  ID_TO_CHAIN_ID,
-  NodeJSCache,
   routeAmountsToString,
   SwapOptions,
   SwapRoute,
-  UniswapMulticallProvider,
-  V3PoolProvider,
 } from '@bulbaswap/smart-order-router';
 import JSBI from 'jsbi';
 import {
@@ -32,6 +27,8 @@ import {
 } from '../types';
 
 export const NATIVE_ADDRESS = ['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', 'eth'];
+
+export const PROTOCOLS = [Protocol.V2, Protocol.V3, Protocol.MIXED]
 
 // from routing-api (https://github.com/Uniswap/routing-api/blob/main/lib/handlers/quote/quote.ts#L243-L311)
 export function transformSwapRouteToGetQuoteResult(
