@@ -28,7 +28,8 @@ import {
 
 export const NATIVE_ADDRESS = ['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', 'eth'];
 
-export const PROTOCOLS = [Protocol.V2, Protocol.V3, Protocol.MIXED]
+export const PROTOCOLS = [Protocol.V2, Protocol.V3]
+// export const PROTOCOLS = [Protocol.V2, Protocol.V3, Protocol.MIXED]
 
 // from routing-api (https://github.com/Uniswap/routing-api/blob/main/lib/handlers/quote/quote.ts#L243-L311)
 export function transformSwapRouteToGetQuoteResult(
