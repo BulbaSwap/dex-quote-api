@@ -69,7 +69,7 @@ export interface GetQuoteArgs {
   tokenOutAddress: string
   tokenOutDecimals: number
   tokenOutSymbol?: string
-  amount: string
+  amount: number
   account?: string
   protocolPreferences?: Protocol[]
   tradeType: TradeType

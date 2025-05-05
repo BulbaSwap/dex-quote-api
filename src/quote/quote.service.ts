@@ -29,7 +29,7 @@ export class QuoteService {
       tokenOutAddress: outToken.address,
       tokenOutDecimals: Number(outToken.decimals),
       tokenOutSymbol: outToken.symbol,
-      amount: quote.amount.toString(),
+      amount: quote.amount,
       tradeType,
     };
     const protocols: Protocol[] = (

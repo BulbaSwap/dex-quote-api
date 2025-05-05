@@ -1,4 +1,3 @@
-import NodeCache from 'node-cache';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Protocol } from '@bulbaswap/router-sdk';
 import {
