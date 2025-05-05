@@ -14,6 +14,7 @@ import { Pool } from '@bulbaswap/v3-sdk';
 import {
   AlphaRouter,
   AlphaRouterConfig,
+  nativeOnChain,
   routeAmountsToString,
   SwapOptions,
   SwapRoute,
@@ -26,7 +27,7 @@ import {
   V3PoolInRoute,
 } from '../types';
 
-export const NATIVE_ADDRESS = ['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', 'eth'];
+export const NATIVE_ADDRESS = ['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', 'eth', '0x5300000000000000000000000000000000000011'];
 
 export const PROTOCOLS = [Protocol.V2, Protocol.V3]
 // export const PROTOCOLS = [Protocol.V2, Protocol.V3, Protocol.MIXED]
@@ -206,12 +207,7 @@ async function getQuote(
   const tokenOutIsNative = NATIVE_ADDRESS.includes(tokenOut.address.toLowerCase());
 
   const chainId = Number(process.env.CHAIN_ID) as unknown as ChainId;
-  const nativeToken = new Token(
-    chainId,
-    NATIVE_ADDRESS[0],
-    18,
-    'ETH',
-  )
+  const nativeToken = nativeOnChain(chainId)
 
   const currencyIn = tokenInIsNative
     ? nativeToken
