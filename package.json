@@ -36,6 +36,7 @@
     "@sentry/profiling-node": "^8.34.0",
     "@uniswap/uniswapx-sdk": "^2.0.1-alpha.10",
     "axios": "^1.8.4",
+    "bignumber.js": "^9.3.0",
     "helmet": "^8.0.0",
     "jsbi": "3.2.5",
     "logform": "^2.7.0",

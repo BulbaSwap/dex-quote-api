@@ -1,7 +1,6 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Protocol } from '@bulbaswap/router-sdk';
 import {
-  BigintIsh,
   ChainId,
   Currency,
   CurrencyAmount,
@@ -18,6 +17,7 @@ import {
   SwapOptions,
   SwapRoute,
 } from '@bulbaswap/smart-order-router';
+import BigNumber from 'bignumber.js';
 import JSBI from 'jsbi';
 import {
   ClassicQuoteData,
@@ -197,7 +197,7 @@ async function getQuote(
       decimals: number;
       symbol?: string;
     };
-    amount: BigintIsh;
+    amount: string;
   },
   swapParams: SwapOptions,
   routerConfig: Partial<AlphaRouterConfig>,

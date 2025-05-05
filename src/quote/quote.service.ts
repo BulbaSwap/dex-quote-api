@@ -8,6 +8,7 @@ import {
 import { UNIVERSAL_ROUTER_ADDRESS } from '@bulbaswap/universal-router-sdk';
 import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import BigNumber from 'bignumber.js';
 import { QuoteDto, tradeTypeObj } from './quote.dto';
 import { tokenInfo } from 'src/token';
 import { getQuoteRoute, PROTOCOLS } from 'src/lib/router';
@@ -29,7 +30,7 @@ export class QuoteService {
       tokenOutAddress: outToken.address,
       tokenOutDecimals: Number(outToken.decimals),
       tokenOutSymbol: outToken.symbol,
-      amount: quote.amount,
+      amount: new BigNumber(quote.amount).toFixed(),
       tradeType,
     };
     const protocols: Protocol[] = (
@@ -68,8 +69,12 @@ export class QuoteService {
 
     const swapParams: SwapOptions = {
       type: SwapType.UNIVERSAL_ROUTER,
-      slippageTolerance: parseSlippageTolerance(quote.slippage ? quote.slippage.toString() : '0.5'),
-      deadlineOrPreviousBlockhash: parseDeadline(quote.deadline ? quote.deadline.toString() : '300'),
+      slippageTolerance: parseSlippageTolerance(
+        quote.slippage ? quote.slippage.toString() : '0.5',
+      ),
+      deadlineOrPreviousBlockhash: parseDeadline(
+        quote.deadline ? quote.deadline.toString() : '300',
+      ),
       recipient: quote.recipient,
     };
 
@@ -98,7 +103,11 @@ export class QuoteService {
     }
 
     try {
-      const quoteResponse = await getQuoteRoute(args, swapParams, routingConfig);
+      const quoteResponse = await getQuoteRoute(
+        args,
+        swapParams,
+        routingConfig,
+      );
 
       if (quoteResponse) {
         return quoteResponse;
