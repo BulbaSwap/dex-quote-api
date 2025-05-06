@@ -17,7 +17,6 @@ import {
   SwapOptions,
   SwapRoute,
 } from '@bulbaswap/smart-order-router';
-import BigNumber from 'bignumber.js';
 import JSBI from 'jsbi';
 import {
   ClassicQuoteData,
@@ -26,7 +25,7 @@ import {
   V3PoolInRoute,
 } from '../types';
 
-export const NATIVE_ADDRESS = ['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', 'eth', '0x5300000000000000000000000000000000000011'];
+export const NATIVE_ADDRESS = ['eth', 'weth', '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', '0x5300000000000000000000000000000000000011'];
 
 export const PROTOCOLS = [Protocol.V2, Protocol.V3]
 // export const PROTOCOLS = [Protocol.V2, Protocol.V3, Protocol.MIXED]

@@ -29,7 +29,9 @@ export enum Protocols {
 
 const address = z.union([
   z.literal('eth'),
+  z.literal('weth'),
   z.literal('ETH'),
+  z.literal('WETH'),
   z.custom<string>((value) => isAddress(value, { strict: false }), "Invalid Address"),
 ]);
 
