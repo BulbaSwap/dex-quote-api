@@ -21,7 +21,7 @@ spec:
             - name: CHAIN_ID
               value: '2810'
             - name: RPC_URL
-              value: https://fragrant-quick-leaf.morph-holesky.quiknode.pro/b1a6727d8df97e06fbca4f79b4ade3db0a2fdaaf
+              value: https://newest-old-dust.morph-holesky.quiknode.pro
             - name: API_URL
               value: http://dex-backend.dev-dex.svc:3000/v1
           image: $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$VERSION
