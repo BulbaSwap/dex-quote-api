@@ -23,7 +23,7 @@ spec:
             - name: RPC_URL
               value: https://newest-old-dust.morph-holesky.quiknode.pro
             - name: API_URL
-              value: http://dex-backend.dev-dex.svc:3000/v1
+              value: http://dex-backend.bulbaswap.svc:3000/v1
           image: $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$VERSION
           livenessProbe:
             httpGet:
