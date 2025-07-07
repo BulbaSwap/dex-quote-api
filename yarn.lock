@@ -348,10 +348,10 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@bulbaswap/smart-order-router@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.npmjs.org/@bulbaswap/smart-order-router/-/smart-order-router-2.0.5.tgz"
-  integrity sha512-YSZlUa4CMaDDkQu74Dlx5uB/6E1c1MVz0k3KwjSR44wyR/Xz02TCs/hcQVIcKqc75w0B16kubv2Cn63Pi7TZ6g==
+"@bulbaswap/smart-order-router@2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@bulbaswap/smart-order-router/-/smart-order-router-2.0.6.tgz#29211c36d7fce0fa42aa2cb4baf88e12e910e3d0"
+  integrity sha512-V/8hYToMqf+UTiU2W8ltma2NUmuqbEdRpVJxXCSnBYuAxjIKk35tU1cu4Fvj8lVzS531FwXZdjp3CrKnKQqPPg==
   dependencies:
     "@bulbaswap/permit2-sdk" "^2.0.1"
     "@bulbaswap/router-sdk" "^2.0.1"
