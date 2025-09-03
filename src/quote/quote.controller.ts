@@ -11,7 +11,7 @@ export class QuoteController {
   @Get()
   @UseZodGuard('query', QuoteSchema)
   @UseInterceptors(CacheInterceptor)
-  @CacheTTL(1 * 1000)
+  @CacheTTL(2 * 1000)
   quote(@Query() quoteDto: QuoteDto) {
     return this.quoteService.quote(quoteDto);
   }
