@@ -18,6 +18,26 @@ spec:
         - name: harbor-auth
       containers:
         - env:
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dex-backend-secret
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dex-backend-secret
+                  key: REDIS_PORT
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dex-backend-secret
+                  key: REDIS_PASSWORD
+            - name: REDIS_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: dex-backend-secret
+                  key: REDIS_DATABASE
             - name: CHAIN_ID
               value: '2810'
             - name: RPC_URL

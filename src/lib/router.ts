@@ -166,14 +166,19 @@ export function transformSwapRouteToGetQuoteResult(
   return result;
 }
 
+// Create singleton router instance
+let routerInstance: AlphaRouter | null = null;
+
 function getRouter(): AlphaRouter {
-  const chainId = Number(process.env.CHAIN_ID) as unknown as ChainId;
-  const provider = new StaticJsonRpcProvider(process.env.RPC_URL);
-  const router = new AlphaRouter({
-    chainId,
-    provider,
-  });
-  return router;
+  if (!routerInstance) {
+    const chainId = Number(process.env.CHAIN_ID) as unknown as ChainId;
+    const provider = new StaticJsonRpcProvider(process.env.RPC_URL);
+    routerInstance = new AlphaRouter({
+      chainId,
+      provider,
+    });
+  }
+  return routerInstance;
 }
 
 async function getQuote(

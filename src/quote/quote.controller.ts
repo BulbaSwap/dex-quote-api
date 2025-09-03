@@ -1,4 +1,5 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { UseZodGuard } from 'nestjs-zod';
 import { QuoteService } from './quote.service';
 import { QuoteDto, QuoteSchema } from './quote.dto';
@@ -9,6 +10,8 @@ export class QuoteController {
 
   @Get()
   @UseZodGuard('query', QuoteSchema)
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(1 * 1000)
   quote(@Query() quoteDto: QuoteDto) {
     return this.quoteService.quote(quoteDto);
   }
