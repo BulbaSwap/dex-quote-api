@@ -348,10 +348,10 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@bulbaswap/smart-order-router@2.0.6":
-  version "2.0.6"
-  resolved "https://registry.npmmirror.com/@bulbaswap/smart-order-router/-/smart-order-router-2.0.6.tgz"
-  integrity sha512-V/8hYToMqf+UTiU2W8ltma2NUmuqbEdRpVJxXCSnBYuAxjIKk35tU1cu4Fvj8lVzS531FwXZdjp3CrKnKQqPPg==
+"@bulbaswap/smart-order-router@2.0.7":
+  version "2.0.7"
+  resolved "https://registry.npmjs.org/@bulbaswap/smart-order-router/-/smart-order-router-2.0.7.tgz"
+  integrity sha512-/vycsrlCIXiHFhK+WUXVBLZsElLPTdT0fmLvSjwZsl4ScNM+C5sC9Kz4jvWmpS0Sgl2g/MyNMTrVITApIj1nqA==
   dependencies:
     "@bulbaswap/permit2-sdk" "^2.0.1"
     "@bulbaswap/router-sdk" "^2.0.1"

@@ -52,17 +52,18 @@ export class QuoteService {
       v3PoolSelection: {
         topN: 2,
         topNDirectSwaps: 2,
-        topNTokenInOut: 3,
+        topNTokenInOut: 2,
         topNSecondHop: 1,
         topNWithEachBaseToken: 3,
-        topNWithBaseToken: 5,
+        topNWithBaseToken: 2,
       },
-      maxSwapsPerPath: 3,
+      maxSwapsPerPath: 2,
       minSplits: quote.minSplits ? quote.minSplits : 1,
       maxSplits: 7,
-      distributionPercent: 5,
+      distributionPercent: 25,
       forceCrossProtocol: false,
       protocols,
+      forceMixedRoutes: protocols.includes(Protocol.MIXED),
     };
 
     const chainId = this.configService.get('CHAIN_ID');
@@ -117,6 +118,7 @@ export class QuoteService {
       }
     } catch (error) {
       this.logger.error(`quoteResponse error: ${JSON.stringify(error)}`);
+      this.logger.error('error', error);
       throw new NotFoundException();
     }
   }
