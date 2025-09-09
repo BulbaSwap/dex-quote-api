@@ -24,11 +24,8 @@ import {
   V2PoolInRoute,
   V3PoolInRoute,
 } from '../types';
+import { NATIVE_ADDRESS } from 'src/consts';
 
-export const NATIVE_ADDRESS = ['eth', 'weth', '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', '0x5300000000000000000000000000000000000011'];
-
-export const PROTOCOLS = [Protocol.V2, Protocol.V3]
-// export const PROTOCOLS = [Protocol.V2, Protocol.V3, Protocol.MIXED]
 
 // from routing-api (https://github.com/Uniswap/routing-api/blob/main/lib/handlers/quote/quote.ts#L243-L311)
 export function transformSwapRouteToGetQuoteResult(

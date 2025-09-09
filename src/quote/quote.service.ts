@@ -11,7 +11,8 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import BigNumber from 'bignumber.js';
 import { QuoteDto, tradeTypeObj } from './quote.dto';
 import { tokenInfo } from 'src/token';
-import { getQuoteRoute, PROTOCOLS } from 'src/lib/router';
+import { getQuoteRoute } from 'src/lib/router';
+import { PROTOCOLS } from 'src/consts';
 import { parseDeadline, parseSlippageTolerance } from 'src/lib';
 
 @Injectable()
