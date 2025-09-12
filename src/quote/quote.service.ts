@@ -9,11 +9,12 @@ import { UNIVERSAL_ROUTER_ADDRESS } from '@bulbaswap/universal-router-sdk';
 import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import BigNumber from 'bignumber.js';
-import { QuoteDto, tradeTypeObj } from './quote.dto';
+import { QuoteDto, QuoteSpeed, tradeTypeObj } from './quote.dto';
 import { tokenInfo } from 'src/token';
 import { getQuoteRoute } from 'src/lib/router';
 import { PROTOCOLS } from 'src/consts';
 import { parseDeadline, parseSlippageTolerance } from 'src/lib';
+import { QUOTE_SPEED_CONFIG } from 'src/config';
 
 @Injectable()
 export class QuoteService {
@@ -34,6 +35,10 @@ export class QuoteService {
       amount: new BigNumber(quote.amount).toFixed(),
       tradeType,
     };
+    let minSplits = 1;
+    if (quote.quoteSpeed === QuoteSpeed.STANDARD && quote.minSplits) {
+      minSplits = quote.minSplits;
+    }
     const protocols: Protocol[] = (
       quote.protocols?.includes(',')
         ? PROTOCOLS
@@ -42,26 +47,8 @@ export class QuoteService {
           : PROTOCOLS
     ) as Protocol[];
     const routingConfig: AlphaRouterConfig = {
-      v2PoolSelection: {
-        topN: 3,
-        topNDirectSwaps: 1,
-        topNTokenInOut: 5,
-        topNSecondHop: 2,
-        topNWithEachBaseToken: 2,
-        topNWithBaseToken: 6,
-      },
-      v3PoolSelection: {
-        topN: 2,
-        topNDirectSwaps: 2,
-        topNTokenInOut: 2,
-        topNSecondHop: 1,
-        topNWithEachBaseToken: 3,
-        topNWithBaseToken: 2,
-      },
-      maxSwapsPerPath: 2,
-      minSplits: quote.minSplits ? quote.minSplits : 1,
-      maxSplits: 7,
-      distributionPercent: 25,
+      ...QUOTE_SPEED_CONFIG[quote.quoteSpeed],
+      minSplits,
       forceCrossProtocol: false,
       protocols,
       forceMixedRoutes: protocols.includes(Protocol.MIXED),
