@@ -3,6 +3,11 @@ import { createZodDto } from 'nestjs-zod';
 import { isAddress } from 'viem';
 import { z } from 'zod';
 
+export enum QuoteSpeed {
+  FAST = 'fast',
+  STANDARD = 'standard',
+}
+
 enum TradeTypeRequest {
   EXACT_INPUT = '0',
   EXACT_OUTPUT = '1',
@@ -43,6 +48,7 @@ export const QuoteSchema = z.object({
   tokenInAddress: address,
   tokenOutAddress: address,
   type: z.nativeEnum(TradeTypeRequest),
+  quoteSpeed: z.nativeEnum(QuoteSpeed).default(QuoteSpeed.STANDARD),
   slippage: z.coerce.number().min(0.01).max(100).optional().nullable(),
   protocols: z.nativeEnum(Protocols).optional().nullable(),
   recipient: z.custom<string>((value) => isAddress(value, { strict: false }), "Invalid Address").optional().nullable(),
