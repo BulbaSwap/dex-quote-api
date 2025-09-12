@@ -33,6 +33,7 @@ https://api.bulbaswap.io/v1/quote
 | tokenInAddress  | true | string | eth, ETH, weth, WETH, 0x... |
 | tokenOutAddress  | true | string | eth, ETH, weth, WETH, 0x... |
 | type  | true | string | (0, exactIn, buy)/(1, exactOut, sell) |
+| quoteSpeed  | false | string | standard(default), fast |
 | slippage  | false | number | min: 0.01, max: 100, default: 0.5 |
 | protocols  | false | string | v2/v3/v2,v3 (default: v2,v3) |
 | recipient  | false | string | 0x... |
