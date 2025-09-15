@@ -62,3 +62,15 @@ export const QuoteSchema = z.object({
 });
 
 export class QuoteDto extends createZodDto(QuoteSchema) {}
+
+// Fast quote schema with minimal validation for speed
+export const FastQuoteSchema = z.object({
+  amount: z.coerce.number().int().positive(),
+  tokenInAddress: address,
+  tokenOutAddress: address,
+  type: z.nativeEnum(TradeTypeRequest),
+  slippage: z.coerce.number().min(0.01).max(100).optional().nullable(),
+  recipient: z.custom<string>((value) => isAddress(value, { strict: false }), "Invalid Address").optional().nullable(),
+});
+
+export class FastQuoteDto extends createZodDto(FastQuoteSchema) {}

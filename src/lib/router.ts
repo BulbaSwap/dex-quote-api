@@ -12,11 +12,19 @@ import { Pool } from '@bulbaswap/v3-sdk';
 import {
   AlphaRouter,
   AlphaRouterConfig,
+  CachingGasStationProvider,
+  EIP1559GasPriceProvider,
+  GasPrice,
+  LegacyGasPriceProvider,
   nativeOnChain,
+  NodeJSCache,
+  OnChainGasPriceProvider,
   routeAmountsToString,
   SwapOptions,
   SwapRoute,
+  UniswapMulticallProvider,
 } from '@bulbaswap/smart-order-router';
+import NodeCache from 'node-cache';
 import JSBI from 'jsbi';
 import {
   ClassicQuoteData,
@@ -170,9 +178,22 @@ function getRouter(): AlphaRouter {
   if (!routerInstance) {
     const chainId = Number(process.env.CHAIN_ID) as unknown as ChainId;
     const provider = new StaticJsonRpcProvider(process.env.RPC_URL);
+    const multicall2Provider = new UniswapMulticallProvider(chainId, provider);
     routerInstance = new AlphaRouter({
       chainId,
       provider,
+      multicall2Provider,
+      gasPriceProvider: new CachingGasStationProvider(
+        chainId,
+        new OnChainGasPriceProvider(
+          chainId,
+          new EIP1559GasPriceProvider(provider),
+          new LegacyGasPriceProvider(provider)
+        ),
+        new NodeJSCache<GasPrice>(
+          new NodeCache({ stdTTL: 15, useClones: true })
+        )
+      ),
     });
   }
   return routerInstance;
