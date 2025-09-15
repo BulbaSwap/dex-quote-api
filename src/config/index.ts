@@ -7,6 +7,10 @@ type QuoteSpeedConfig = {
   maxSwapsPerPath: number
   maxSplits: number
   distributionPercent: number
+  forceCrossProtocol: boolean
+  forceMixedRoutes: boolean
+  useCachedRoutes?: boolean
+  writeToCachedRoutes?: boolean
 }
 
 export const QUOTE_SPEED_CONFIG: Record<QuoteSpeed, QuoteSpeedConfig> = {
@@ -27,9 +31,11 @@ export const QUOTE_SPEED_CONFIG: Record<QuoteSpeed, QuoteSpeedConfig> = {
       topNWithEachBaseToken: 3,
       topNWithBaseToken: 2,
     },
-    maxSwapsPerPath: 2,
+    maxSwapsPerPath: 3,
     maxSplits: 7,
-    distributionPercent: 25,
+    distributionPercent: 5,
+    forceCrossProtocol: false,
+    forceMixedRoutes: false,
   },
   fast: {
     v2PoolSelection: {
@@ -37,19 +43,23 @@ export const QUOTE_SPEED_CONFIG: Record<QuoteSpeed, QuoteSpeedConfig> = {
       topNDirectSwaps: 1,
       topNTokenInOut: 1,
       topNSecondHop: 0,
-      topNWithEachBaseToken: 1,
-      topNWithBaseToken: 1,
+      topNWithEachBaseToken: 0,
+      topNWithBaseToken: 0,
     },
     v3PoolSelection: {
       topN: 1,
       topNDirectSwaps: 1,
       topNTokenInOut: 1,
       topNSecondHop: 0,
-      topNWithEachBaseToken: 1,
-      topNWithBaseToken: 1,
+      topNWithEachBaseToken: 0,
+      topNWithBaseToken: 0,
     },
     maxSwapsPerPath: 2,
-    maxSplits: 1,
-    distributionPercent: 100,
+    maxSplits: 2,
+    distributionPercent: 5,
+    forceCrossProtocol: false,
+    forceMixedRoutes: false,
+    useCachedRoutes: false,
+    writeToCachedRoutes: false,
   },
 }
