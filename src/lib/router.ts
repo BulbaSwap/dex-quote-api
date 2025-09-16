@@ -13,16 +13,24 @@ import {
   AlphaRouter,
   AlphaRouterConfig,
   CachingGasStationProvider,
+  CachingTokenListProvider,
+  CachingTokenProviderWithFallback,
   EIP1559GasPriceProvider,
   GasPrice,
   LegacyGasPriceProvider,
+  LegacyRouter,
+  LegacyRoutingConfig,
   nativeOnChain,
   NodeJSCache,
   OnChainGasPriceProvider,
+  OnChainQuoteProvider,
   routeAmountsToString,
   SwapOptions,
+  SwapOptionsSwapRouter02,
   SwapRoute,
+  TokenProvider,
   UniswapMulticallProvider,
+  V3PoolProvider,
 } from '@bulbaswap/smart-order-router';
 import NodeCache from 'node-cache';
 import JSBI from 'jsbi';
@@ -32,7 +40,7 @@ import {
   V2PoolInRoute,
   V3PoolInRoute,
 } from '../types';
-import { NATIVE_ADDRESS } from 'src/consts';
+import { DEFAULT_TOKEN_LIST, NATIVE_ADDRESS } from 'src/consts';
 
 
 // from routing-api (https://github.com/Uniswap/routing-api/blob/main/lib/handlers/quote/quote.ts#L243-L311)
@@ -172,14 +180,15 @@ export function transformSwapRouteToGetQuoteResult(
 }
 
 // Create singleton router instance
-let routerInstance: AlphaRouter | null = null;
+let alphaRouterInstance: AlphaRouter | null = null;
+let legacyRouterInstance: LegacyRouter | null = null;
 
-function getRouter(): AlphaRouter {
-  if (!routerInstance) {
+function getAlphaRouter(): AlphaRouter {
+  if (!alphaRouterInstance) {
     const chainId = Number(process.env.CHAIN_ID) as unknown as ChainId;
     const provider = new StaticJsonRpcProvider(process.env.RPC_URL);
     const multicall2Provider = new UniswapMulticallProvider(chainId, provider);
-    routerInstance = new AlphaRouter({
+    alphaRouterInstance = new AlphaRouter({
       chainId,
       provider,
       multicall2Provider,
@@ -196,7 +205,40 @@ function getRouter(): AlphaRouter {
       ),
     });
   }
-  return routerInstance;
+  return alphaRouterInstance;
+}
+
+async function getLegacyRouter(): Promise<LegacyRouter> {
+  if (!legacyRouterInstance) {
+    const chainId = Number(process.env.CHAIN_ID) as unknown as ChainId;
+    const provider = new StaticJsonRpcProvider(process.env.RPC_URL);
+    const multicall2Provider = new UniswapMulticallProvider(chainId, provider);
+    const tokenCache = new NodeJSCache<Token>(
+      new NodeCache({ stdTTL: 3600, useClones: false })
+    )
+    const tokenListProvider = await CachingTokenListProvider.fromTokenList(
+      chainId,
+      DEFAULT_TOKEN_LIST,
+      tokenCache
+    )
+    legacyRouterInstance = new LegacyRouter({
+      chainId,
+      multicall2Provider,
+      poolProvider: new V3PoolProvider(chainId, multicall2Provider),
+      quoteProvider: new OnChainQuoteProvider(
+        chainId,
+        provider,
+        multicall2Provider
+      ),
+      tokenProvider: new CachingTokenProviderWithFallback(
+        chainId,
+        tokenCache,
+        tokenListProvider,
+        new TokenProvider(chainId, multicall2Provider)
+      ),
+    });
+  }
+  return legacyRouterInstance;
 }
 
 async function getQuote(
@@ -223,6 +265,7 @@ async function getQuote(
   },
   swapParams: SwapOptions,
   routerConfig: Partial<AlphaRouterConfig>,
+  fast,
 ): Promise<ClassicQuoteData> {
   const tokenInIsNative = NATIVE_ADDRESS.includes(tokenIn.address.toLowerCase());
   const tokenOutIsNative = NATIVE_ADDRESS.includes(tokenOut.address.toLowerCase());
@@ -257,13 +300,14 @@ async function getQuote(
     JSBI.BigInt(amountRaw),
   );
   const recipient = swapParams.recipient;
-  const router = getRouter();
+  const router = fast ? getAlphaRouter() : await getLegacyRouter();
+
   const swapRoute = await router.route(
     amount,
     quoteCurrency,
     tradeType,
-    swapParams,
-    routerConfig,
+    swapParams as SwapOptionsSwapRouter02,
+    routerConfig as Partial<LegacyRoutingConfig> & Partial<AlphaRouterConfig>,
   );
 
   if (!swapRoute) {
@@ -285,6 +329,7 @@ export async function getQuoteRoute(
   }: GetQuoteArgs,
   swapParams: SwapOptions,
   routingConfig: Partial<AlphaRouterConfig>,
+  fast = false,
 ) {
   const chainId = Number(process.env.CHAIN_ID);
   return getQuote(
@@ -306,5 +351,6 @@ export async function getQuoteRoute(
     },
     swapParams,
     routingConfig,
+    fast,
   );
 }

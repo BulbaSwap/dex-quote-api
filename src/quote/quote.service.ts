@@ -178,11 +178,11 @@ export class QuoteService {
     };
 
     const swapParams: SwapOptions = {
-      type: SwapType.UNIVERSAL_ROUTER,
+      type: SwapType.SWAP_ROUTER_02,
       slippageTolerance: parseSlippageTolerance(
         quote.slippage ? quote.slippage.toString() : '0.5',
       ),
-      deadlineOrPreviousBlockhash: parseDeadline('300'), // Fixed deadline
+      deadline: parseDeadline('300'), // Fixed deadline
       recipient: quote.recipient,
     };
 
