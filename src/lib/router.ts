@@ -15,21 +15,25 @@ import {
   CachingGasStationProvider,
   CachingTokenListProvider,
   CachingTokenProviderWithFallback,
+  CachingV3PoolProvider,
   EIP1559GasPriceProvider,
+  EthEstimateGasSimulator,
+  FallbackTenderlySimulator,
   GasPrice,
   LegacyGasPriceProvider,
   LegacyRouter,
-  LegacyRoutingConfig,
   nativeOnChain,
   NodeJSCache,
   OnChainGasPriceProvider,
   OnChainQuoteProvider,
   routeAmountsToString,
   SwapOptions,
-  SwapOptionsSwapRouter02,
   SwapRoute,
+  TenderlySimulator,
+  TokenPropertiesProvider,
   TokenProvider,
   UniswapMulticallProvider,
+  V2PoolProvider,
   V3PoolProvider,
 } from '@bulbaswap/smart-order-router';
 import NodeCache from 'node-cache';
@@ -41,6 +45,8 @@ import {
   V3PoolInRoute,
 } from '../types';
 import { DEFAULT_TOKEN_LIST, NATIVE_ADDRESS } from 'src/consts';
+import { OnChainTokenFeeFetcher } from '@bulbaswap/smart-order-router/build/main/providers/token-fee-fetcher';
+import { PortionProvider } from '@bulbaswap/smart-order-router/build/main/providers/portion-provider';
 
 
 // from routing-api (https://github.com/Uniswap/routing-api/blob/main/lib/handlers/quote/quote.ts#L243-L311)
@@ -183,15 +189,79 @@ export function transformSwapRouteToGetQuoteResult(
 let alphaRouterInstance: AlphaRouter | null = null;
 let legacyRouterInstance: LegacyRouter | null = null;
 
-function getAlphaRouter(): AlphaRouter {
+async function getAlphaRouter(): Promise<AlphaRouter> {
   if (!alphaRouterInstance) {
     const chainId = Number(process.env.CHAIN_ID) as unknown as ChainId;
     const provider = new StaticJsonRpcProvider(process.env.RPC_URL);
     const multicall2Provider = new UniswapMulticallProvider(chainId, provider);
+    const gasPriceCache = new NodeJSCache<GasPrice>(
+      new NodeCache({ stdTTL: 15, useClones: true })
+    );
+    const v3PoolProvider = new CachingV3PoolProvider(
+      chainId,
+      new V3PoolProvider(chainId, multicall2Provider),
+      new NodeJSCache(new NodeCache({ stdTTL: 3600, useClones: false }))
+    );
+    const tokenFeeFetcher = new OnChainTokenFeeFetcher(
+      chainId,
+      provider
+    )
+    const tokenPropertiesProvider = new TokenPropertiesProvider(
+      chainId,
+      new NodeJSCache(new NodeCache({ stdTTL: 3600, useClones: false })),
+      tokenFeeFetcher
+    )
+    const v2PoolProvider = new V2PoolProvider(chainId, multicall2Provider, tokenPropertiesProvider);
+
+    const portionProvider = new PortionProvider();
+    const tenderlySimulator = new TenderlySimulator(
+      chainId,
+      'https://api.tenderly.co',
+      process.env.TENDERLY_USER!,
+      process.env.TENDERLY_PROJECT!,
+      process.env.TENDERLY_ACCESS_KEY!,
+      v2PoolProvider,
+      v3PoolProvider,
+      provider,
+      portionProvider,
+    );
+
+    const ethEstimateGasSimulator = new EthEstimateGasSimulator(
+      chainId,
+      provider,
+      v2PoolProvider,
+      v3PoolProvider,
+      portionProvider
+    );
+
+    const simulator = new FallbackTenderlySimulator(
+      chainId,
+      provider,
+      portionProvider,
+      tenderlySimulator,
+      ethEstimateGasSimulator
+    );
+    const tokenCache = new NodeJSCache<Token>(
+      new NodeCache({ stdTTL: 3600, useClones: false })
+    )
+    const tokenListProvider = await CachingTokenListProvider.fromTokenList(
+      chainId,
+      DEFAULT_TOKEN_LIST,
+      tokenCache
+    )
     alphaRouterInstance = new AlphaRouter({
       chainId,
       provider,
       multicall2Provider,
+      v2PoolProvider,
+      v3PoolProvider,
+      tokenPropertiesProvider,
+      tokenProvider: new CachingTokenProviderWithFallback(
+        chainId,
+        tokenCache,
+        tokenListProvider,
+        new TokenProvider(chainId, multicall2Provider)
+      ),
       gasPriceProvider: new CachingGasStationProvider(
         chainId,
         new OnChainGasPriceProvider(
@@ -199,10 +269,9 @@ function getAlphaRouter(): AlphaRouter {
           new EIP1559GasPriceProvider(provider),
           new LegacyGasPriceProvider(provider)
         ),
-        new NodeJSCache<GasPrice>(
-          new NodeCache({ stdTTL: 15, useClones: true })
-        )
+        gasPriceCache
       ),
+      simulator,
     });
   }
   return alphaRouterInstance;
@@ -300,14 +369,14 @@ async function getQuote(
     JSBI.BigInt(amountRaw),
   );
   const recipient = swapParams.recipient;
-  const router = fast ? getAlphaRouter() : await getLegacyRouter();
+  const router = await getAlphaRouter();
 
   const swapRoute = await router.route(
     amount,
     quoteCurrency,
     tradeType,
-    swapParams as SwapOptionsSwapRouter02,
-    routerConfig as Partial<LegacyRoutingConfig> & Partial<AlphaRouterConfig>,
+    swapParams,
+    routerConfig,
   );
 
   if (!swapRoute) {
